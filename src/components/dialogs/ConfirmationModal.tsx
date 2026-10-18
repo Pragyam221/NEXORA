@@ -1,4 +1,5 @@
 import React from 'react';
+import { createPortal } from 'react-dom';
 import { AlertTriangle, X } from 'lucide-react';
 
 interface ConfirmationModalProps {
@@ -22,14 +23,14 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   onConfirm,
   onCancel,
 }) => {
-  if (!isOpen) return null;
+  if (!isOpen || typeof document === 'undefined') return null;
 
   const btnBg = variant === 'danger' 
     ? 'bg-status-danger hover:bg-status-danger/90 text-white' 
     : (variant === 'warning' ? 'bg-status-warning hover:bg-status-warning/90 text-navy-950 font-semibold' : 'bg-accent-purple hover:bg-accent-purpleHover text-white');
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-950/80 backdrop-blur-sm animate-fade-in">
+  return createPortal(
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-navy-950/80 backdrop-blur-sm animate-fade-in">
       <div 
         className="w-full max-w-md bg-navy-900 border border-navy-700/60 rounded-2xl p-6 shadow-2xl relative text-left"
         role="dialog"
@@ -70,6 +71,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };

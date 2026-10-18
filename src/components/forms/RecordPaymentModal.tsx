@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useDashboard } from '../../context/DashboardContext';
 import { X, CreditCard } from 'lucide-react';
 import { PaymentMethod, PaymentStatus } from '../../types';
@@ -27,7 +28,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
   const [transactionRef, setTransactionRef] = useState(`NEFT/DEMO-${Date.now().toString().slice(-6)}`);
   const [notes, setNotes] = useState('Commercial tranche received and credited to accounts.');
 
-  if (!isOpen) return null;
+  if (!isOpen || typeof document === 'undefined') return null;
 
   const relevantOrders = orders.filter(o => o.dealId === dealId);
 
@@ -56,8 +57,8 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
     onClose();
   };
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-950/80 backdrop-blur-sm animate-fade-in">
+  return createPortal(
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-navy-950/80 backdrop-blur-sm animate-fade-in">
       <div className="w-full max-w-lg bg-navy-900 border border-navy-750 rounded-2xl shadow-2xl p-6 text-left relative max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between border-b border-navy-800 pb-4 mb-5">
           <div className="flex items-center space-x-2.5">
@@ -224,6 +225,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
           </div>
         </form>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };

@@ -1,4 +1,5 @@
 import React from 'react';
+import { createPortal } from 'react-dom';
 import { useDashboard } from '../../context/DashboardContext';
 import { 
   X, ExternalLink, Calendar, User, Building, Mail, Phone, 
@@ -37,8 +38,10 @@ export const GlobalDetailModal: React.FC = () => {
   const orderRecord = orders.find(o => o.id === id);
   const paymentRecord = payments.find(p => p.id === id);
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-end bg-navy-950/70 backdrop-blur-sm animate-fade-in">
+  if (typeof document === 'undefined') return null;
+
+  return createPortal(
+    <div className="fixed inset-0 z-[100] flex items-center justify-end bg-navy-950/70 backdrop-blur-sm animate-fade-in">
       <div 
         className="w-full max-w-2xl h-full bg-navy-900 border-l border-navy-750 shadow-2xl overflow-y-auto flex flex-col text-left transition-transform duration-300"
         role="dialog"
@@ -817,6 +820,7 @@ export const GlobalDetailModal: React.FC = () => {
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };

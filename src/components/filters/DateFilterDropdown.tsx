@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useDashboard } from '../../context/DashboardContext';
-import { Calendar, ChevronDown, Check, ArrowRight, RotateCcw } from 'lucide-react';
+import { Calendar, ChevronDown, Check, RotateCcw, X } from 'lucide-react';
 import { formatDateCustom } from '../../utils/dates';
 import { DateRangeOption } from '../../types';
 
@@ -132,10 +133,10 @@ export const DateFilterDropdown: React.FC = () => {
         </div>
       )}
 
-      {/* Custom Range Dialog */}
-      {showCustomModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-950/80 backdrop-blur-sm">
-          <div className="w-full max-w-md bg-navy-900 border border-navy-700 rounded-2xl p-6 shadow-2xl space-y-5 text-left">
+      {/* Custom Range Dialog portalled directly to document.body to prevent clipping by header containing blocks */}
+      {showCustomModal && typeof document !== 'undefined' && createPortal(
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-navy-950/80 backdrop-blur-sm animate-fade-in">
+          <div className="w-full max-w-md bg-navy-900 border border-navy-700 rounded-2xl p-6 shadow-2xl space-y-5 text-left relative">
             <div className="flex items-center justify-between border-b border-navy-800 pb-3">
               <div className="flex items-center space-x-2">
                 <Calendar className="w-4 h-4 text-accent-purple" />
@@ -143,9 +144,9 @@ export const DateFilterDropdown: React.FC = () => {
               </div>
               <button
                 onClick={() => setShowCustomModal(false)}
-                className="text-text-muted hover:text-text-primary text-xs"
+                className="p-1 rounded-lg text-text-muted hover:text-text-primary hover:bg-navy-800 transition-colors"
               >
-                Close
+                <X className="w-4 h-4" />
               </button>
             </div>
 
@@ -181,7 +182,7 @@ export const DateFilterDropdown: React.FC = () => {
               </p>
             </div>
 
-            <div className="flex justify-end space-x-3 pt-2">
+            <div className="flex justify-end space-x-3 pt-2 border-t border-navy-800">
               <button
                 type="button"
                 onClick={() => setShowCustomModal(false)}
@@ -198,7 +199,8 @@ export const DateFilterDropdown: React.FC = () => {
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
